@@ -1,12 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>To Do List app</title>
+
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        <!--[if lt IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" integrity="sha512-UDJtJXfzfsiPPgnI5S1000FPLBHMhvzAMX15I+qG2E2OAzC9P1JzUwJOfnypXiOH7MRPaqzhPbBGDNNj7zBfoA==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js" integrity="sha512-qWVvreMuH9i0DrugcOtifxdtZVBBL0X75r9YweXsdCHtXUidlctw7NXg5KVP3ITPtqZ2S575A0wFkvgS2anqSA==" crossorigin="anonymous"></script>
+        <![endif]-->
     </head>
+
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('homepage') }}">
+                    To Do List app <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms">
+                </a>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div class="container">
+            <div class="row mt-3">
+                <div class="col-12">
+                    <a href="{{ path('user_create') }}" class="btn btn-info mr-3">Créer un utilisateur</a>
+
+                    {% if app.user %}
+                        <a href="{{ path('logout') }}" class="pull-right btn btn-outline-danger">Se déconnecter</a>
+                    {% endif %}
+
+                    {% if not app.user and 'login' != app.request.attributes.get('_route') %}
+                        <a href="{{ path('login') }}" class="btn btn-outline-success">Se connecter</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-12">
+                    {% for flash_message in app.flashes('success') %}
+                        <div class="alert alert-success mb-3" role="alert">
+                            <strong>Superbe !</strong> {{ flash_message }}
+                        </div>
+                    {% endfor %}
+
+                    {% for flash_message in app.flashes('error') %}
+                        <div class="alert alert-danger mb-3" role="alert">
+                            <strong>Oops !</strong> {{ flash_message }}
+                        </div>
+                    {% endfor %}
+
+                    {% block header_title %}{% endblock %}
+
+                    {% block header_img %}<img class="slide-image" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">{% endblock %}
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+                <div class="col-12">
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+
+        <div class="container">
+            <hr>
+            <footer>
+                <div class="row">
+                    <div class="col-12">
+                        <p class="text-center">Copyright &copy; OpenClassrooms</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
     </body>
 </html>
