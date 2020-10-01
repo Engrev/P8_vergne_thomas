@@ -53,6 +53,11 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @var string|null
+     */
+    private $plainPassword;
+
+    /**
      * @ORM\Column(type="json")
      */
     private $roles = [];
@@ -141,6 +146,26 @@ class User implements UserInterface
     }
 
     /**
+     * @return string|null
+     */
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string|null $plainPassword
+     *
+     * @return $this
+     */
+    public function setPlainPassword($plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    /**
      * @see UserInterface
      */
     public function getRoles(): array
@@ -179,6 +204,7 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
+        $this->plainPassword = null;
     }
 
     /**
