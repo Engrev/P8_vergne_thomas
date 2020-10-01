@@ -11,10 +11,12 @@
                 <span class="text-secondary float-right">
                     {% if task.isDone %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}
                 </span>
-                <h4 class="card-title">{{ task.title }}</h4>
-                <p class="card-text">{{ task.content }}</p>
-                <a href="{{ path('task_edit', {'id' : task.id }) }}" class="card-link text-warning">Modifier</a>
+                <h4 class="card-title d-block d-lg-inline-block">{{ task.title }}</h4>
+                <span class="badge badge-secondary mb-3 mb-lg-0 ml-lg-2">{% if task.user is null %}Anonyme{% else %}{{ task.user.username|capitalize }}{% endif %}</span>
 
+                <p class="card-text">{{ task.content }}</p>
+
+                <a href="{{ path('task_edit', {'id' : task.id }) }}" class="card-link text-warning">Modifier</a>
                 <a href="{{ path('task_toggle', {'id' : task.id }) }}" class="card-link text-success float-right ml-3">
                     {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
                 </a>

@@ -64,8 +64,12 @@ class TaskController extends AbstractController
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
+        $user = $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (!is_null($user)) {
+                $task->setUser($user);
+            }
             $this->entityManager->persist($task);
             $this->entityManager->flush();
 
