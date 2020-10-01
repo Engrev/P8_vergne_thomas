@@ -69,8 +69,10 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword(
-                $passwordEncoder->encodePassword($user, $user->getPassword())
+                $passwordEncoder->encodePassword($user, $user->getPlainPassword())
             );
+            $user->eraseCredentials();
+            $user->setRoles([$request->request->get('user_roles')]);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
@@ -96,9 +98,13 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $passwordEncoder->encodePassword($user, $user->getPassword())
-            );
+            if (!empty($user->getPlainPassword())) {
+                $user->setPassword(
+                    $passwordEncoder->encodePassword($user, $user->getPlainPassword())
+                );
+                $user->eraseCredentials();
+            }
+            $user->setRoles([$request->request->get('user_roles')]);
             $this->entityManager->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été modifié.");

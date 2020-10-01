@@ -7,6 +7,12 @@
     {{ form_start(form) }}
         {{ form_widget(form) }}
 
+        <label class="required" for="user_roles">Rôle</label>
+        <select class="custom-select" name="user_roles" id="user_roles" required="required">
+            <option value="ROLE_USER"{% if user.roles[0] is same as('ROLE_USER') %} selected="selected"{% endif %}>Utilisateur</option>
+            <option value="ROLE_ADMIN"{% if user.roles[0] is same as('ROLE_ADMIN') %} selected="selected"{% endif %}>Administrateur</option>
+        </select>
+
         <button type="submit" class="btn btn-success float-right mt-3">Modifier</button>
     {{ form_end(form) }}
 {% endblock %}
