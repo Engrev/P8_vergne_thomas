@@ -6,6 +6,7 @@ use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -121,6 +122,8 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/{id}/delete", name="delete")
+     *
+     * @IsGranted("delete", subject="task", statusCode=401, message="Seul la personne ayant créé la tâche peut la supprimer.")
      *
      * @param Task $task
      *
