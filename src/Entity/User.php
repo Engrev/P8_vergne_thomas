@@ -23,6 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     }
  * )
  * @UniqueEntity(fields={"username"}, message="Un utilisateur existe déjà avec ce pseudo.")
+ * @UniqueEntity(fields={"email"}, message="Un utilisateur existe déjà avec cet email.")
  */
 class User implements UserInterface
 {
