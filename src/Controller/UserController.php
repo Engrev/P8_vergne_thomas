@@ -89,6 +89,8 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}/edit", name="edit")
      *
+     * @IsGranted("ROLE_ADMIN", statusCode=401, message="Seul les administrateurs peuvent accéder à cette page.")
+     *
      * @param User                         $user
      * @param Request                      $request
      * @param UserPasswordEncoderInterface $passwordEncoder
