@@ -55,7 +55,7 @@ class Task
      */
     public function __construct()
     {
-        $this->createdAt = new \DateTime("now", new \DateTimeZone("Europe/Paris"));
+        $this->setCreatedAt();
         $this->isDone = false;
     }
 
@@ -156,13 +156,11 @@ class Task
     }
 
     /**
-     * @param \DateTimeInterface $createdAt
-     *
      * @return $this
      */
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(): self
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new \DateTime("now", new \DateTimeZone("Europe/Paris"));
 
         return $this;
     }
