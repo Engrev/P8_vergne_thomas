@@ -104,8 +104,12 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if (!empty($user->getPlainPassword())) {
-                $user->setPassword(
-                    $passwordEncoder->encodePassword($user, $user->getPlainPassword())
+                $this->repository->upgradePassword(
+                    $user,
+                    $passwordEncoder->encodePassword(
+                        $user,
+                        $user->getPlainPassword()
+                    )
                 );
                 $user->eraseCredentials();
             }
