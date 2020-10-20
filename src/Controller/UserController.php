@@ -45,7 +45,6 @@ class UserController extends AbstractController
 
     /**
      * @Route("/", name="list")
-     *
      * @IsGranted("ROLE_ADMIN", statusCode=401, message="Seul les administrateurs peuvent accéder à cette page.")
      *
      * @return Response
@@ -58,6 +57,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/create", name="create")
+     * @IsGranted("ROLE_ADMIN", statusCode=401, message="Seul les administrateurs peuvent accéder à cette page.")
      *
      * @param Request                      $request
      * @param UserPasswordEncoderInterface $passwordEncoder
@@ -88,7 +88,6 @@ class UserController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="edit")
-     *
      * @IsGranted("ROLE_ADMIN", statusCode=401, message="Seul les administrateurs peuvent accéder à cette page.")
      *
      * @param User                         $user

@@ -122,7 +122,6 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/{id}/delete", name="delete")
-     *
      * @IsGranted("delete", subject="task", statusCode=401, message="Seul la personne ayant créé la tâche peut la supprimer.")
      *
      * @param Task $task
