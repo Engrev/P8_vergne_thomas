@@ -45,7 +45,7 @@ class TaskControllerTest extends WebTestCase
         $client = static::createClient();
         $userRepository = static::$container->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'engrev']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -131,7 +131,7 @@ class TaskControllerTest extends WebTestCase
         $userRepository = static::$container->get(UserRepository::class);
         $taskRepository = static::$container->get(TaskRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'toto']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe2']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -148,7 +148,7 @@ class TaskControllerTest extends WebTestCase
         $userRepository = static::$container->get(UserRepository::class);
         $taskRepository = static::$container->get(TaskRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'engrev']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -167,7 +167,7 @@ class TaskControllerTest extends WebTestCase
         $userRepository = static::$container->get(UserRepository::class);
         $taskRepository = static::$container->get(TaskRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'toto']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe2']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -184,7 +184,7 @@ class TaskControllerTest extends WebTestCase
         $userRepository = static::$container->get(UserRepository::class);
         $taskRepository = static::$container->get(TaskRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'engrev']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 

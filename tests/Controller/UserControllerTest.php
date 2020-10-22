@@ -26,7 +26,7 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
         $userRepository = static::$container->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'toto']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe2']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -39,7 +39,7 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
         $userRepository = static::$container->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'engrev']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -51,29 +51,29 @@ class UserControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/users/create');
-        $this->assertResponseIsSuccessful();
-
-        $this->assertCount(1, $crawler->filter('button[type=submit]'));
-        $form = $crawler->selectButton('Ajouter')->form();
-        $username = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 6);
-        $form['user[username]'] = $username;
-        $form['user[email]'] = $username.'@email.fr';
-        $form['user[plainPassword][first]'] = 'azertyuiop';
-        $form['user[plainPassword][second]'] = 'azertyuiop';
-        $form['user_roles'] = 'ROLE_USER';
-        $client->submit($form);
-
-        $client->followRedirect();
+        $client->request('GET', '/users/create');
         $this->assertResponseStatusCodeSame(401);
     }
 
-    public function testCreateUserLoggedIn()
+    public function testCreateUserLoggedInWithRoleUser()
     {
         $client = static::createClient();
         $userRepository = static::$container->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'engrev']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe2']);
+        $this->assertInstanceOf(User::class, $testUser);
+        $client->loginUser($testUser);
+
+        $client->request('GET', '/users/create');
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+    public function testCreateUserLoggedInWithRoleAdmin()
+    {
+        $client = static::createClient();
+        $userRepository = static::$container->get(UserRepository::class);
+
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -97,14 +97,19 @@ class UserControllerTest extends WebTestCase
     public function testCreateExistingUser()
     {
         $client = static::createClient();
+        $userRepository = static::$container->get(UserRepository::class);
+
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
+        $this->assertInstanceOf(User::class, $testUser);
+        $client->loginUser($testUser);
 
         $crawler = $client->request('GET', '/users/create');
         $this->assertResponseIsSuccessful();
 
         $this->assertCount(1, $crawler->filter('button[type=submit]'));
         $form = $crawler->selectButton('Ajouter')->form();
-        $form['user[username]'] = 'engrev';
-        $form['user[email]'] = 'tvergne83@gmail.com';
+        $form['user[username]'] = 'johndoe2';
+        $form['user[email]'] = 'johndoe2@demo.com';
         $form['user[plainPassword][first]'] = 'azertyuiop';
         $form['user[plainPassword][second]'] = 'azertyuiop';
         $form['user_roles'] = 'ROLE_USER';
@@ -133,12 +138,44 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(401);
     }
 
+    public function testEditExistingUserLoggedInWithRoleUser()
+    {
+        $client = static::createClient();
+        $userRepository = static::$container->get(UserRepository::class);
+
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe2']);
+        $this->assertInstanceOf(User::class, $testUser);
+        $client->loginUser($testUser);
+
+        $user = $userRepository->findOneBy([], ['id'=>'DESC']);
+        $this->assertInstanceOf(User::class, $user);
+
+        $client->request('GET', '/users/'.$user->getId().'/edit');
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+    public function testEditExistingUserLoggedInWithRoleAdmin()
+    {
+        $client = static::createClient();
+        $userRepository = static::$container->get(UserRepository::class);
+
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
+        $this->assertInstanceOf(User::class, $testUser);
+        $client->loginUser($testUser);
+
+        $user = $userRepository->findOneBy([], ['id'=>'DESC']);
+        $this->assertInstanceOf(User::class, $user);
+
+        $client->request('GET', '/users/'.$user->getId().'/edit');
+        $this->assertResponseIsSuccessful();
+    }
+
     public function testEditExistingUserLoggedInWithoutPassword()
     {
         $client = static::createClient();
         $userRepository = static::$container->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'engrev']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -165,7 +202,7 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
         $userRepository = static::$container->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'engrev']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -194,7 +231,7 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
         $userRepository = static::$container->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'engrev']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 
@@ -207,7 +244,7 @@ class UserControllerTest extends WebTestCase
         $this->assertCount(1, $crawler->filter('button[type=submit]'));
         $form = $crawler->selectButton('Modifier')->form();
         $username = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 6);
-        $form['user[username]'] = 'engrev';
+        $form['user[username]'] = 'johndoe';
         $form['user[email]'] = $username.'@email.fr';
         $form['user_roles'] = 'ROLE_USER';
         $crawler = $client->submit($form);

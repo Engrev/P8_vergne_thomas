@@ -22,7 +22,7 @@ class SecurityControllerTest extends WebTestCase
 
         $this->assertCount(1, $crawler->filter('button[type=submit]'));
         $form = $crawler->selectButton('Se connecter')->form();
-        $form['username'] = 'engrev';
+        $form['username'] = 'johndoe';
         $form['password'] = 'azertyuiop';
         $client->submit($form);
 
@@ -39,7 +39,7 @@ class SecurityControllerTest extends WebTestCase
 
         $this->assertCount(1, $crawler->filter('button[type=submit]'));
         $form = $crawler->selectButton('Se connecter')->form();
-        $form['username'] = 'engrev';
+        $form['username'] = 'johndoe';
         $form['password'] = 'azertyuiop';
         $form['_remember_me'] = 'on';
         $client->submit($form);
@@ -53,7 +53,7 @@ class SecurityControllerTest extends WebTestCase
         $client = static::createClient();
         $userRepository = static::$container->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username'=>'engrev']);
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
 

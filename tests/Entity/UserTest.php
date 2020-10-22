@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class UserTest
  * @package App\Tests
+ * php bin/phpunit tests/Entity/UserTest.php
  */
 class UserTest extends TestCase
 {
@@ -23,5 +24,13 @@ class UserTest extends TestCase
         ;
 
         $this->assertInstanceOf(User::class, $user);
+    }
+
+    public function testOthersUserMethods()
+    {
+        $user = new User();
+
+        $roles = $user->getRoles();
+        $this->assertIsArray($roles);
     }
 }

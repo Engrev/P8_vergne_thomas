@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class TaskTest
  * @package App\Tests
+ * php bin/phpunit tests/Entity/TaskTest.php
  */
 class TaskTest extends TestCase
 {
