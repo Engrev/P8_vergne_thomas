@@ -36,3 +36,6 @@ There are several commands to run tests :
 * `php bin/phpunit` : run all tests of the application.
 * `php bin/phpunit tests/Controller` : run all tests in the Controller/ folder.
 * `php bin/phpunit tests/Controller/DefaultControllerTest.php` : run tests for the DefaultControllerTest class.
+
+Before running your tests, I advise you to create another database to avoid cluttering the main database.
+Consider changing the users in the existing tests based on the ones you created.
