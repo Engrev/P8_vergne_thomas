@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block header_actions %}{% endblock %}
+{% block header_img %}{% endblock %}
+
+{% block body %}
+    <div id="page_error">
+        <div id="header" class="statusCode">
+            <h1>ERREUR 404 - Page non trouvée !</h1>
+        </div>
+        <div id="content">
+            <h2>L'erreur suivante est survenue :</h2>
+            <p>La page demandée n'a pas été trouvée sur ce serveur.</p>
+        </div>
+    </div>
+{% endblock %}

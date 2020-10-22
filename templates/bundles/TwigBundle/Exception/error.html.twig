@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block header_actions %}{% endblock %}
+{% block header_img %}{% endblock %}
+
+{% block body %}
+    <div id="page_error">
+        <div id="header" class="statusCodeError">
+            <h1>ERREUR !</h1>
+        </div>
+        <div id="content">
+            <h2>Une erreur est survenue.</h2>
+            <p>Veuillez contacter l'administrateur du site.</p>
+        </div>
+    </div>
+{% endblock %}

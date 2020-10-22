@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block header_actions %}{% endblock %}
+{% block header_img %}{% endblock %}
+
+{% block body %}
+    <div id="page_error">
+        <div id="header" class="statusCode">
+            <h1>ERREUR 401 - Non autorisé !</h1>
+        </div>
+        <div id="content">
+            <h2>L'erreur suivante est survenue :</h2>
+            <p>Vous n'êtes pas autorisé à accéder à cette page.</p>
+        </div>
+    </div>
+{% endblock %}
