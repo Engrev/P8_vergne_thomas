@@ -16,13 +16,11 @@
 
                 <p class="card-text">{{ task.content }}</p>
 
-                {% if (is_granted('ROLE_ADMIN') or task.user is not null and task.user is same as (app.user)) %}
-                    <a href="{{ path('task_edit', {'id' : task.id }) }}" class="card-link text-warning">Modifier</a>
-                    <a href="{{ path('task_toggle', {'id' : task.id }) }}" class="card-link text-success float-right ml-3">
-                        {% if not task.isDone %}Marquer comme terminée{% else %}Marquer non terminée{% endif %}
-                    </a>
-                    <a href="{{ path('task_delete', {'id' : task.id }) }}" class="card-link text-danger float-right">Supprimer</a>
-                {% endif %}
+                <a href="{{ path('task_edit', {'id' : task.id }) }}" class="card-link text-warning">Modifier</a>
+                <a href="{{ path('task_toggle', {'id' : task.id }) }}" class="card-link text-success float-right ml-3">
+                    {% if not task.isDone %}Marquer comme terminée{% else %}Marquer non terminée{% endif %}
+                </a>
+                <a href="{{ path('task_delete', {'id' : task.id }) }}" class="card-link text-danger float-right">Supprimer</a>
             </div>
         </div>
     {% else %}

@@ -44,17 +44,20 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/", name="list")
+     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
      *
      * @return Response
      */
     public function list(): Response
     {
-        $tasks = $this->repository->findBy([], ['createdAt'=>'DESC']);
+        $user = $this->getUser();
+        $tasks = $this->repository->findBy(['user'=>$user->getId()], ['createdAt'=>'DESC']);
         return $this->render('task/list.html.twig', ['tasks' => $tasks]);
     }
 
     /**
      * @Route("/create", name="create")
+     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
      *
      * @param Request $request
      *
@@ -65,12 +68,9 @@ class TaskController extends AbstractController
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
-        $user = $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!is_null($user)) {
-                $task->setUser($user);
-            }
+            $task->setUser($this->getUser());
             $this->entityManager->persist($task);
             $this->entityManager->flush();
 
@@ -83,6 +83,7 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="edit")
+     * @IsGranted("edit", subject="task", statusCode=401, message="Seul la personne ayant créé la tâche peut la modifier.")
      *
      * @param Task    $task
      * @param Request $request
@@ -106,6 +107,7 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/{id}/toggle", name="toggle")
+     * @IsGranted("toggle", subject="task", statusCode=401, message="Seul la personne ayant créé la tâche peut changer son état.")
      *
      * @param Task $task
      *

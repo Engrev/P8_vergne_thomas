@@ -13,6 +13,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class TaskVoter extends Voter
 {
+    const TOGGLE = 'toggle';
+    const EDIT = 'edit';
     const DELETE = 'delete';
 
     /**
@@ -23,7 +25,7 @@ class TaskVoter extends Voter
      */
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, [self::DELETE]) && $subject instanceof Task;
+        return in_array($attribute, [self::TOGGLE, self::EDIT, self::DELETE]) && $subject instanceof Task;
     }
 
     /**
@@ -45,6 +47,6 @@ class TaskVoter extends Voter
             return $user->hasRoles('ROLE_ADMIN');
         }
 
-        return /*$user->hasRoles('ROLE_ADMIN') || */$user === $task->getUser();
+        return $user->hasRoles('ROLE_ADMIN') || $user === $task->getUser();
     }
 }

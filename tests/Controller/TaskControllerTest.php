@@ -20,24 +20,17 @@ class TaskControllerTest extends WebTestCase
         $client = static::createClient();
 
         $client->request('GET', '/tasks/');
-        $this->assertResponseIsSuccessful();
+        $crawler = $client->followRedirect();
+        $this->assertCount(1, $crawler->filter('input[name=_remember_me]'));
     }
 
     public function testCreateTaskAnonymously()
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/tasks/create');
-        $this->assertResponseIsSuccessful();
-
-        $this->assertCount(1, $crawler->filter('button[type=submit]'));
-        $form = $crawler->selectButton('Ajouter')->form();
-        $form['task[title]'] = 'A faire';
-        $form['task[content]'] = 'Faire les courses.';
-        $client->submit($form);
-
+        $client->request('GET', '/tasks/create');
         $crawler = $client->followRedirect();
-        $this->assertCount(1, $crawler->filter('div.alert.alert-success'));
+        $this->assertCount(1, $crawler->filter('input[name=_remember_me]'));
     }
 
     public function testCreateTaskLoggedIn()
@@ -62,13 +55,47 @@ class TaskControllerTest extends WebTestCase
         $this->assertCount(1, $crawler->filter('div.alert.alert-success'));
     }
 
-    public function testEditExistingTask()
+    public function testEditTaskAnonymously()
     {
         $client = static::createClient();
         $taskRepository = static::$container->get(TaskRepository::class);
 
         $testTask = $taskRepository->findOneBy([], ['id'=>'DESC']);
         $this->assertInstanceOf(Task::class, $testTask);
+
+        $client->request('GET', '/tasks/'.$testTask->getId().'/edit');
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+    public function testEditExistingTaskNotAuthorLoggedIn()
+    {
+        $client = static::createClient();
+        $taskRepository = static::$container->get(TaskRepository::class);
+        $userRepository = static::$container->get(UserRepository::class);
+
+        $testTask = $taskRepository->findOneBy([], ['id'=>'DESC']);
+        $this->assertInstanceOf(Task::class, $testTask);
+
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe2']);
+        $this->assertInstanceOf(User::class, $testUser);
+        $client->loginUser($testUser);
+
+        $client->request('GET', '/tasks/'.$testTask->getId().'/edit');
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+    public function testEditExistingTaskAuthorOrRoleAdminLoggedIn()
+    {
+        $client = static::createClient();
+        $taskRepository = static::$container->get(TaskRepository::class);
+        $userRepository = static::$container->get(UserRepository::class);
+
+        $testTask = $taskRepository->findOneBy([], ['id'=>'DESC']);
+        $this->assertInstanceOf(Task::class, $testTask);
+
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
+        $this->assertInstanceOf(User::class, $testUser);
+        $client->loginUser($testUser);
 
         $crawler = $client->request('GET', '/tasks/'.$testTask->getId().'/edit');
         $this->assertResponseIsSuccessful();
@@ -91,13 +118,47 @@ class TaskControllerTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isNotFound());
     }
 
-    public function testToggleExistingTask()
+    public function testToggleTaskAnonymously()
     {
         $client = static::createClient();
         $taskRepository = static::$container->get(TaskRepository::class);
 
         $testTask = $taskRepository->findOneBy([], ['id'=>'DESC']);
         $this->assertInstanceOf(Task::class, $testTask);
+
+        $client->request('GET', '/tasks/'.$testTask->getId().'/toggle');
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+    public function testToggleExistingTaskNotAuthorLoggedIn()
+    {
+        $client = static::createClient();
+        $taskRepository = static::$container->get(TaskRepository::class);
+        $userRepository = static::$container->get(UserRepository::class);
+
+        $testTask = $taskRepository->findOneBy([], ['id'=>'DESC']);
+        $this->assertInstanceOf(Task::class, $testTask);
+
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe2']);
+        $this->assertInstanceOf(User::class, $testUser);
+        $client->loginUser($testUser);
+
+        $client->request('GET', '/tasks/'.$testTask->getId().'/toggle');
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+    public function testToggleExistingTaskAuthorOrRoleAdminLoggedIn()
+    {
+        $client = static::createClient();
+        $taskRepository = static::$container->get(TaskRepository::class);
+        $userRepository = static::$container->get(UserRepository::class);
+
+        $testTask = $taskRepository->findOneBy([], ['id'=>'DESC']);
+        $this->assertInstanceOf(Task::class, $testTask);
+
+        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
+        $this->assertInstanceOf(User::class, $testUser);
+        $client->loginUser($testUser);
 
         $client->request('GET', '/tasks/'.$testTask->getId().'/toggle');
 
@@ -131,18 +192,18 @@ class TaskControllerTest extends WebTestCase
         $userRepository = static::$container->get(UserRepository::class);
         $taskRepository = static::$container->get(TaskRepository::class);
 
+        $testTask = $taskRepository->findOneBy([], ['id'=>'DESC']);
+        $this->assertInstanceOf(Task::class, $testTask);
+
         $testUser = $userRepository->findOneBy(['username'=>'johndoe2']);
         $this->assertInstanceOf(User::class, $testUser);
         $client->loginUser($testUser);
-
-        $testTask = $taskRepository->findOneBy(['user'=>null], ['id'=>'DESC']);
-        $this->assertInstanceOf(Task::class, $testTask);
 
         $client->request('GET', '/tasks/'.$testTask->getId().'/delete');
         $this->assertResponseStatusCodeSame(401);
     }
 
-    public function testDeleteExistingTaskAuthorLoggedIn()
+    public function testDeleteExistingTaskAuthorOrRoleAdminLoggedIn()
     {
         $client = static::createClient();
         $userRepository = static::$container->get(UserRepository::class);
@@ -153,42 +214,6 @@ class TaskControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         $testTask = $taskRepository->findOneBy(['user'=>$testUser->getId()], ['id'=>'DESC']);
-        $this->assertInstanceOf(Task::class, $testTask);
-
-        $client->request('GET', '/tasks/'.$testTask->getId().'/delete');
-
-        $crawler = $client->followRedirect();
-        $this->assertCount(1, $crawler->filter('div.alert.alert-success'));
-    }
-
-    public function testDeleteExistingTaskNotAuthorLoggedInWithRoleUser()
-    {
-        $client = static::createClient();
-        $userRepository = static::$container->get(UserRepository::class);
-        $taskRepository = static::$container->get(TaskRepository::class);
-
-        $testUser = $userRepository->findOneBy(['username'=>'johndoe2']);
-        $this->assertInstanceOf(User::class, $testUser);
-        $client->loginUser($testUser);
-
-        $testTask = $taskRepository->findOneBy(['user'=>null], ['id'=>'DESC']);
-        $this->assertInstanceOf(Task::class, $testTask);
-
-        $client->request('GET', '/tasks/'.$testTask->getId().'/delete');
-        $this->assertResponseStatusCodeSame(401);
-    }
-
-    public function testDeleteExistingTaskNotAuthorLoggedInWithRoleAdmin()
-    {
-        $client = static::createClient();
-        $userRepository = static::$container->get(UserRepository::class);
-        $taskRepository = static::$container->get(TaskRepository::class);
-
-        $testUser = $userRepository->findOneBy(['username'=>'johndoe']);
-        $this->assertInstanceOf(User::class, $testUser);
-        $client->loginUser($testUser);
-
-        $testTask = $taskRepository->findOneBy(['user'=>null], ['id'=>'DESC']);
         $this->assertInstanceOf(Task::class, $testTask);
 
         $client->request('GET', '/tasks/'.$testTask->getId().'/delete');
