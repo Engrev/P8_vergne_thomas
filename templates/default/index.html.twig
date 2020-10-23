@@ -7,4 +7,7 @@
 {% block body %}
     <a href="{{ path('task_create') }}" class="btn btn-success">Créer une nouvelle tâche</a>
     <a href="{{ path('task_list') }}" class="btn btn-primary mx-3">Consulter la liste des tâches</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('task_list_anonymous') }}" class="btn btn-secondary">Consulter la liste des tâches anonymes</a>
+    {% endif %}
 {% endblock %}

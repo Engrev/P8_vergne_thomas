@@ -43,6 +43,10 @@ class TaskVoter extends Voter
         }
         $task = $subject;
 
+        if ($attribute !== self::TOGGLE && $task->getIsDone() === true) {
+            return false;
+        }
+
         if (is_null($task->getUser())) {
             return $user->hasRoles('ROLE_ADMIN');
         }
